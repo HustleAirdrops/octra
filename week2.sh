@@ -8,7 +8,8 @@ echo -e "${GREEN}📦 Octra CLI Installer — Proot/Termux/PC Edition${NC}"
 sudo apt update && apt upgrade -y
 sudo apt install -y python3 python3-pip python3-venv python3-dev git curl
 cd ~
-if [ -d "~/octra_pre_client" ]; then
+
+if [ -d "$HOME/octra_pre_client" ]; then
   echo -e "${GREEN}🔄 Updating existing repo...${NC}"
   cd ~/octra_pre_client
   git pull
@@ -25,20 +26,25 @@ source venv/bin/activate
 
 pip install --upgrade pip
 pip install -r requirements.txt
-echo -e "${GREEN}🔑 Paste your private key:${NC}"
-read -r my_priv_key
 
-echo -e "${GREEN}📬 Paste your Octra address (starts with oct...):${NC}"
-read -r my_addr
+# Check wallet.json
+if [ -f "wallet.json" ]; then
+  echo -e "${GREEN}🔑 Existing wallet.json found. Skipping creation.${NC}"
+else
+  echo -e "${GREEN}🔑 Paste your private key:${NC}"
+  read -r my_priv_key
 
-cat <<EOF > wallet.json
+  echo -e "${GREEN}📬 Paste your Octra address (starts with oct...):${NC}"
+  read -r my_addr
+
+  cat <<EOF > wallet.json
 {
   "priv": "$my_priv_key",
   "addr": "$my_addr",
   "rpc": "https://octra.network"
 }
 EOF
+  echo -e "${GREEN}✅ wallet.json created with your private key & address.${NC}"
+fi
 
-
-echo -e "${GREEN}✅ wallet.json created with your private key & address.${NC}"
 cd ~/octra_pre_client && source venv/bin/activate && python3 cli.py
