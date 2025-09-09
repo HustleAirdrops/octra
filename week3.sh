@@ -30,3 +30,4 @@ else
 fi
 
 echo "🚀 Setup complete. You are now in ~/ocs01-test/"
+cd ~/ocs01-test && ./target/release/ocs01-test
